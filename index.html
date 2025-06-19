@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>House Price Predictor Web APP</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 320px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: 500;
+            text-align: left;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #1e40af;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #10b981;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2> House Price Predictor</h2>
+        <label for="area">Area (sq ft)</label>
+        <input id="area" type="number" placeholder="Enter area in sq ft">
+
+        <label for="bedrooms">Bedrooms</label>
+        <input id="bedrooms" type="number" placeholder="Enter number of bedrooms">
+
+        <button onclick="predict()">Predict</button>
+
+        <h3 id="result"></h3>
+    </div>
+
+    <script>
+        async function predict() {
+            const area = document.getElementById('area').value;
+            const bedrooms = document.getElementById('bedrooms').value;
+
+            try {
+                const response = await fetch('http://localhost:5000/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        area: Number(area),
+                        bedrooms: Number(bedrooms)
+                    })
+                });
+
+                if (!response.ok) throw new Error('Server error');
+
+                const data = await response.json();
+                document.getElementById('result').innerText = `Predicted Price: ₹${data.predicted_price.toFixed(2)}`;
+            } catch (error) {
+                console.error(error);
+                document.getElementById('result').innerText = 'Could not fetch prediction.';
+            }
+        }
+    </script>
+</body>
+</html>
+
