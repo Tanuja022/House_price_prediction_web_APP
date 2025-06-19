@@ -7,6 +7,7 @@ CORS(app)
 model=joblib.load('house_price_model.pkl')
 
 @app.route('/')
+
 def home():
     return render_template('index.html')
 
